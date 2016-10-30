@@ -20,7 +20,9 @@ y_ = tf.placeholder("float", [None, 10])
 
 cross_entropy = -tf.reduce_sum(y_*tf.log(y))
 
-train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy) 
+mod = tf.reduce_sum(tf.abs(y-y_))				#通过最小化  E(|y`-y|) 求解  自创  效果差不多，时间复杂度低于cross_entropy   O(MN) < O(MMNN)
+
+train_step = tf.train.GradientDescentOptimizer(0.01).minimize(mod) 
 
 #评估模型
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
