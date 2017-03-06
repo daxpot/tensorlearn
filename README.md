@@ -5,7 +5,7 @@ tensorflow 学习以及相关实验
 ## TensorFlow 内置运算操作
 
 | 类型 | 示例 | 
-| :- | :- | 
+| :-- | :-- | 
 | 标量运算 | Add、Sub、Mul、Div、Exp、Log、Greater、Less、Equal | 
 | 向量运算 | Concat、Slice、Split、Constant、Rank、Shape、Shuffle | 
 | 矩阵运算 | MatMul、MatrixInverse、MatrixDeterminant | 
