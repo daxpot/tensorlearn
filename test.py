@@ -1,49 +1,44 @@
-#coding=utf-8
-import tensorflow as tf
+from keras.layers.normalization import BatchNormalization
+from keras.models import Sequential
+from keras.layers.core import Dense,Dropout,Activation
+from keras.optimizers import SGD,Adam
+import numpy as np
+import keras
 
-#1. 做一个简单的矩阵相乘
-'''
-matrix1 = tf.constant([[3, 1]])   #1x2
-matrix2 = tf.constant([[3], [3]])  #2x1
+def fizzbuzz(start,end):
+    x_train,y_train=[],[]
+    for i in range(start,end+1):
+        num = i
+        tmp=[0]*10
+        j=0
+        while num :
+            tmp[j] = num & 1
+            num = num>>1
+            j+=1        
+        x_train.append(tmp)
+        if i % 3 == 0 and i % 5 ==0:
+            y_train.append([0,0,0,1])
+        elif i % 3 == 0:
+            y_train.append([0,1,0,0])
+        elif i % 5 == 0:
+            y_train.append([0,0,1,0])
+        else :
+            y_train.append([1,0,0,0])
+    return np.array(x_train),np.array(y_train)
 
-product = tf.matmul(matrix1, matrix2)
+x_train,y_train = fizzbuzz(101,1000) #打标记函数
+x_test,y_test = fizzbuzz(1,100)
 
-with tf.Session() as sess:
-	ret = sess.run(product)
-	print ret
+model = Sequential()
+model.add(Dense(input_dim=10,output_dim=1000))
+model.add(Activation('relu'))
+model.add(Dense(output_dim=4))
+model.add(Activation('softmax'))
 
-'''
+model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 
-#2. 做一个变量叠加，测试变量功能
+model.fit(x_train,y_train,batch_size=20,nb_epoch=100)
 
-'''
-state = tf.Variable(0, "counter")
+result = model.evaluate(x_test,y_test,batch_size=1000)
 
-one = tf.constant(1)
-
-new_value = tf.add(state, one)
-update = tf.assign(state, new_value)
-
-init_op = tf.initialize_all_variables()
-
-with tf.Session() as sess:
-	sess.run(init_op)
-
-	# print sess.run(state)
-
-	for _ in range(3):
-		print sess.run(update)
-'''
-
-#3. 测试fetch，run 中传入tensor获取多个返回
-
-input1 = tf.placeholder(tf.int32)
-input2 = tf.constant(3)
-input3 = tf.constant(5)
-
-add = tf.add(input1, input2)
-mul = tf.mul(input3, add)
-
-with tf.Session() as sess:
-	ret = sess.run([mul, add], feed_dict={input1: 3})
-	print ret
+print('Acc：',result[1])
